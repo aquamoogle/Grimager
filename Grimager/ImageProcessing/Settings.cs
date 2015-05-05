@@ -16,6 +16,7 @@ namespace Grimager.ImageProcessing
             Height = int.Parse(cfg["Image.Height"]);
             Spacing = int.Parse(cfg["Image.Spacing"]);
             LetterBoxSize = int.Parse(cfg["Image.Numbering.Size"]);
+            ValidFormats = cfg["Image.ValidFormats"].Split(',').Select(x => x.ToLower()).ToArray();
         }
 
         private static Settings _instance;
@@ -35,5 +36,6 @@ namespace Grimager.ImageProcessing
         public int Border { get; set; }
         public int Spacing { get; set; }
         public int LetterBoxSize { get; set; }
+        public string[] ValidFormats { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace Grimager
 
                 foreach (var resp in output)
                 {
-                    Console.WriteLine(output);
+                    Console.WriteLine(resp);
                 }
 
                 Console.Write("Press 1 to exit or 2 to run again..");

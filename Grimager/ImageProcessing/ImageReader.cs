@@ -14,7 +14,8 @@ namespace Grimager.ImageProcessing
 
         public ImageReader(string path)
         {
-            Files = Directory.GetFiles(path);
+            var cfg = Settings.Get();
+            Files = Directory.GetFiles(path).Where(x => cfg.ValidFormats.Any(y => x.EndsWith(y, StringComparison.InvariantCultureIgnoreCase))).ToArray();
         }
 
         public IEnumerable<Image> GetImages()

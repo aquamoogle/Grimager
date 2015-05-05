@@ -20,59 +20,72 @@ namespace Grimager.ImageProcessing
 
         public string[] ProcessTo(string sourceDirectory, string outputFile)
         {
-            var reader = new ImageReader(sourceDirectory);
-            int idx = 1;
-            var cfg = Settings.Get();
-            var images = new List<Image>();
-            foreach (var original in reader.GetImages())
+            try
             {
-                var img = ResizeImage(original, cfg.Width, cfg.Height);
-                using (var graphic = Graphics.FromImage(img))
+                var reader = new ImageReader(sourceDirectory);
+                int idx = 1;
+                var cfg = Settings.Get();
+                var images = new List<Image>();
+                foreach (var original in reader.GetImages())
                 {
-                    graphic.FillRectangle(Brushes.White, new Rectangle(0, 0, cfg.LetterBoxSize, cfg.LetterBoxSize));
-                    using (var font = new Font("Arial", cfg.LetterBoxSize - 1))
+                    var img = ResizeImage(original, cfg.Width, cfg.Height);
+                    original.Dispose();
+                    using (var graphic = Graphics.FromImage(img))
                     {
-                        graphic.DrawString(idx.ToString(), font, Brushes.Red, new PointF(0,0));
+                        graphic.FillRectangle(Brushes.White, new Rectangle(0, 0, cfg.LetterBoxSize, cfg.LetterBoxSize));
+                        using (var font = new Font("Arial", 7))
+                        {
+                            graphic.DrawString(idx.ToString(), font, Brushes.Red, new RectangleF(0,0, cfg.LetterBoxSize, cfg.LetterBoxSize));
+                        }
+                    }
+                    images.Add(img);
+                    idx++;
+                }
+
+                var totalImages = images.Count();
+                var totalRows = (int) Math.Ceiling(totalImages/(double) Columns);
+                var totalWidth = Columns*cfg.Width + ((Columns - 1)*cfg.Spacing);
+                var totalHeight = totalRows*cfg.Height + ((totalRows - 1)*cfg.Spacing);
+                var output = new Bitmap(totalWidth, totalHeight);
+                var row = 0;
+                using (var graphic = Graphics.FromImage(output))
+                {
+                    for (var i = 0; i < totalImages; i++)
+                    {
+                        if (i > 0 && i%Columns == 0)
+                            row++;
+
+                        var column = i%Columns;
+
+                        var x = column*cfg.Width;
+                        if (column > 0)
+                        {
+                            x += cfg.Spacing*column;
+                        }
+                        var y = row*cfg.Height;
+
+                        if (row > 0)
+                        {
+                            y += cfg.Spacing*row;
+                        }
+
+                        graphic.DrawImage(images[i], new Rectangle(new Point(x, y), new Size(cfg.Width, cfg.Height)));
+                        images[i].Dispose();
                     }
                 }
-                images.Add(img);
-                idx++;
-            }
 
-            var totalImages = images.Count();
-            var totalRows = (int) Math.Ceiling(totalImages/(double)Columns);
-            var totalWidth = Columns*cfg.Width + ((Columns - 1) * cfg.Spacing);
-            var totalHeight = totalRows * cfg.Height + ((totalRows-1) * cfg.Spacing);
-            var output = new Bitmap(totalWidth, totalHeight);
-            var row = 0;
-            using (var graphic = Graphics.FromImage(output))
+                output.Save(outputFile, ImageFormat.Jpeg);
+
+                return new string[0];
+            }
+            catch (Exception ex)
             {
-                for (var i = 0; i < totalImages; i++)
+                return new string[]
                 {
-                    if (i> 0 && i%Columns == 0)
-                        row++;
-
-                    var column = i%Columns;
-
-                    var x = column*cfg.Width;
-                    if (column > 0)
-                    {
-                        x += cfg.Spacing*column;
-                    }
-                    var y = row*cfg.Height;
-
-                    if (row > 0)
-                    {
-                        y += cfg.Spacing*row;
-                    }
-
-                    graphic.DrawImage(images[i], new Rectangle(new Point(x,y), new Size(cfg.Width, cfg.Height)));
-                }
+                    "Folder does not exist or does not contain any valid images",
+                    "Full Error: " + ex.Message
+                };
             }
-
-            output.Save(outputFile, ImageFormat.Jpeg);
-
-            return new string[0];
         }
 
         protected Image ResizeImage(Image image, int width, int height)
