@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageProcessing\ImageExtensions.cs" />
     <Compile Include="ImageProcessing\ImageProcessor.cs" />
     <Compile Include="ImageProcessing\ImageReader.cs" />
     <Compile Include="ImageProcessing\Settings.cs" />
@@ -66,7 +67,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.1">

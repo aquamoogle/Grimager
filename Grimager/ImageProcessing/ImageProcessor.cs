@@ -28,15 +28,12 @@ namespace Grimager.ImageProcessing
                 var images = new List<Image>();
                 foreach (var original in reader.GetImages())
                 {
-                    var img = ResizeImage(original, cfg.Width, cfg.Height);
+                    var img = original.ResizeImage(cfg.Width, cfg.Height);
                     original.Dispose();
                     using (var graphic = Graphics.FromImage(img))
                     {
                         graphic.FillRectangle(Brushes.White, new Rectangle(0, 0, cfg.LetterBoxSize, cfg.LetterBoxSize));
-                        using (var font = new Font("Arial", 7))
-                        {
-                            graphic.DrawString(idx.ToString(), font, Brushes.Red, new RectangleF(0,0, cfg.LetterBoxSize, cfg.LetterBoxSize));
-                        }
+                        graphic.WriteTextToFit(idx.ToString(), 0,0, new Size(cfg.LetterBoxSize, cfg.LetterBoxSize));
                     }
                     images.Add(img);
                     idx++;
@@ -86,31 +83,6 @@ namespace Grimager.ImageProcessing
                     "Full Error: " + ex.Message
                 };
             }
-        }
-
-        protected Image ResizeImage(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
         }
     }
 }
