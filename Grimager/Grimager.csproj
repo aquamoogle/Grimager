@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GrimagerArguments.cs" />
     <Compile Include="ImageProcessing\ImageExtensions.cs" />
     <Compile Include="ImageProcessing\ImageProcessor.cs" />
     <Compile Include="ImageProcessing\ImageReader.cs" />

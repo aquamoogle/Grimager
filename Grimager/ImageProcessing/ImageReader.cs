@@ -18,6 +18,11 @@ namespace Grimager.ImageProcessing
             Files = Directory.GetFiles(path).Where(x => cfg.ValidFormats.Any(y => x.EndsWith(y, StringComparison.InvariantCultureIgnoreCase))).ToArray();
         }
 
+        public ImageReader(params string[] paths)
+        {
+            Files = paths.Select(x => x.Replace("%", " ")).ToArray();
+        }
+
         public IEnumerable<Image> GetImages()
         {
             foreach (var f in Files.OrderBy(x => x))

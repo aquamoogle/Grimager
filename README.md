@@ -1,5 +1,12 @@
 Source Provided from: https://github.com/aquamoogle/Grimager
 
+This program can be executed by running the EXE and following the console prompts 
+OR
+By proving command line arguments.
+Example: Grimager.exe -columns 3 -output D_out.jpg -files D:\Sample\D\1.jpg D:\Sample\D\2.jpg D:\Sample\D\3.jpg
+Help is available by: Grimager.exe -? or Grimager.exe -help
+
+
 This is free and unencumbered software released into the public domain.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or
